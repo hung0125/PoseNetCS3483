@@ -21,6 +21,8 @@
 
         //single image test
         function setup() {
+            createCanvas(cw,ch);
+            
             img = createImg("20sino-xi-master1050.jpg", imageReady);
             img.size(cw, ch);
             document.getElementById("canvas").style.display = "none";
