@@ -49,6 +49,9 @@
         }
 
         function draw() {
+            image(video, 0, 0, width, height);
+            strokeWeight(2);
+
             if (poses.length > 0) {
                 image(img, 0, 0, width, height);
                 strokeWeight(2);
