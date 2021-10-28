@@ -22,7 +22,7 @@
         //single image test
         function setup() {
             createCanvas(cw,ch);
-            
+
             img = createImg("20sino-xi-master1050.jpg", imageReady);
             img.size(cw, ch);
             document.getElementById("canvas").style.display = "none";
@@ -61,7 +61,7 @@
                 const nose = pose.nose;
                 ellipse(nose.x, nose.y, 10, 10);
 
-                noLoop();
+                //noLoop();
             }
         }
 
