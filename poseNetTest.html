@@ -12,73 +12,116 @@
     
     <script>
         let video;
+        let img;
         let poseNet;
         let cw = document.getElementById("canvas").getBoundingClientRect().width;
         let ch = document.getElementById("canvas").getBoundingClientRect().height/2*1.05;
 
         let poses = [];
 
+        //single image test
         function setup() {
-            createCanvas(cw, ch);
+            img = createImg("https://static01.nyt.com/images/2015/01/21/world/20sino-xi/20sino-xi-master1050.jpg", imageReady);
+            img.size(cw, ch);
             document.getElementById("canvas").style.display = "none";
-            background(0);
-            
-            video = createCapture(VIDEO);
-            video.size(cw, ch);
 
-            poseNet = ml5.poseNet(video, {outputStride:8, quantBytes:4}, modelReady);
-            poseNet.on('pose', function(results) {
+            img.hide();
+            frameRate(1);
+        }
+
+        function imageReady() {
+            // set some options
+            const options = {
+                minConfidence: 0.1,
+                inputResolution: { width, height },
+            };
+
+            // assign poseNet
+            poseNet = ml5.poseNet(modelReady, options);
+            // This sets up an event that listens to 'pose' events
+            poseNet.on("pose", function(results) {
                 poses = results;
             });
-            video.hide();
         }
 
         function modelReady() {
-            console.log('Model Loaded');
-        }
-
-        function mousePressed(){
-            console.log(JSON.stringify(poses))
+            console.log("Model Loaded");
+            poseNet.singlePose(img);
         }
 
         function draw() {
-            image(video, 0, 0, width, height);
-            strokeWeight(2);
-
-            // For one pose only (use a for loop for multiple poses!)
             if (poses.length > 0) {
+                image(img, 0, 0, width, height);
+                strokeWeight(2);
                 const pose = poses[0].pose;
 
-                // Create a pink ellipse for the nose
                 fill(213, 0, 143);
                 const nose = pose.nose;
                 ellipse(nose.x, nose.y, 10, 10);
 
-                // Create a yellow ellipse for the right eye
-                fill(255, 215, 0);
-                const rightEye = pose.rightEye;
-                ellipse(rightEye.x, rightEye.y, 10, 10);
-
-                // Create a yellow ellipse for the right eye
-                fill(255, 215, 0);
-                const leftEye = pose.leftEye;
-                ellipse(leftEye.x, leftEye.y, 10, 10);
-
-                fill(255,215,0);
-                const leftKnee = pose.leftKnee;
-                ellipse(leftKnee.x, leftKnee.y, 10, 10);
-
-                fill(255,215,0);
-                const rightKnee = pose.rightKnee;
-                ellipse(rightKnee.x, rightKnee.y, 10, 10);
-
-                line(rightEye.x, rightEye.y, leftEye.x, leftEye.y);
-
+                noLoop();
             }
         }
 
-        setup();
-        
+        // function setup() {
+        //     createCanvas(cw, ch);
+        //     //set canvas framwork to gone
+        //     document.getElementById("canvas").style.display = "none";
+        //     background(0);
+
+        //     video = createCapture(VIDEO);
+        //     video.size(cw, ch);
+
+        //     poseNet = ml5.poseNet(video, {outputStride:8, quantBytes:4}, modelReady);
+        //     poseNet.on('pose', function(results) {
+        //         poses = results;
+        //     });
+        //     video.hide();
+        // }
+
+        // function modelReady() {
+        //     console.log('Model Loaded');
+        // }
+
+        // function mousePressed(){
+        //     console.log(JSON.stringify(poses))
+        // }
+
+        // function draw() {
+        //     image(video, 0, 0, width, height);
+        //     strokeWeight(2);
+
+        //     //what to do when post detected
+        //     if (poses.length > 0) {
+        //         const pose = poses[0].pose;
+
+        //         // Create a pink ellipse for the nose
+        //         fill(213, 0, 143);
+        //         const nose = pose.nose;
+        //         ellipse(nose.x, nose.y, 10, 10);
+
+        //         // Create a yellow ellipse for the right eye
+        //         fill(255, 215, 0);
+        //         const rightEye = pose.rightEye;
+        //         ellipse(rightEye.x, rightEye.y, 10, 10);
+
+        //         // Create a yellow ellipse for the right eye
+        //         fill(255, 215, 0);
+        //         const leftEye = pose.leftEye;
+        //         ellipse(leftEye.x, leftEye.y, 10, 10);
+
+        //         fill(255,215,0);
+        //         const leftKnee = pose.leftKnee;
+        //         ellipse(leftKnee.x, leftKnee.y, 10, 10);
+
+        //         fill(255,215,0);
+        //         const rightKnee = pose.rightKnee;
+        //         ellipse(rightKnee.x, rightKnee.y, 10, 10);
+
+        //         line(rightEye.x, rightEye.y, leftEye.x, leftEye.y);
+
+        //     }
+        // }
     </script>
   </body>
 </html>
