@@ -22,8 +22,8 @@
         //single image test
         function setup() {
             createCanvas(cw,ch);
-
-            img = loadImage("20sino-xi-master1050.jpg");
+            img = createImage("20sino-xi-master1050.jpg", "foobar");
+            img.size(cw, ch);
             
             document.getElementById("canvas").style.display = "none";
 
@@ -61,6 +61,7 @@
                 //noLoop();
             }
         }
+        //end of single image test
 
         // function setup() {
         //     createCanvas(cw, ch);
