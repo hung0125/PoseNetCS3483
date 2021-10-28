@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Getting Fucked with ml5.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+  </head>
+
+  <body>
+    <img id="canvas" style="width:90%; height: 100%;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAR0AAAEuCAYAAACzhMZ4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPNSURBVHhe7dQxAQAgDMCwgX/PwIGGXslTB13nGYDI/gVImA6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gJTpACnTAVKmA6RMB0iZDpAyHSBlOkDKdICU6QAp0wFSpgOkTAdImQ6QMh0gZTpAynSAlOkAKdMBUqYDpEwHSJkOkDIdIGU6QMp0gNDMBcKvBlgkQKgnAAAAAElFTkSuQmCC" />
+    
+    <script>
+        let video;
+        let poseNet;
+        let cw = document.getElementById("canvas").getBoundingClientRect().width;
+        let ch = document.getElementById("canvas").getBoundingClientRect().height/2*1.05;
+
+        let poses = [];
+
+        function setup() {
+            createCanvas(cw, ch);
+            document.getElementById("canvas").style.display = "none";
+            background(0);
+            
+            video = createCapture(VIDEO);
+            video.size(cw, ch);
+
+            poseNet = ml5.poseNet(video, {outputStride:8, quantBytes:4}, modelReady);
+            poseNet.on('pose', function(results) {
+                poses = results;
+            });
+            video.hide();
+        }
+
+        function modelReady() {
+            console.log('Model Loaded');
+        }
+
+        function mousePressed(){
+            console.log(JSON.stringify(poses))
+        }
+
+        function draw() {
+            image(video, 0, 0, width, height);
+            strokeWeight(2);
+
+            // For one pose only (use a for loop for multiple poses!)
+            if (poses.length > 0) {
+                const pose = poses[0].pose;
+
+                // Create a pink ellipse for the nose
+                fill(213, 0, 143);
+                const nose = pose.nose;
+                ellipse(nose.x, nose.y, 10, 10);
+
+                // Create a yellow ellipse for the right eye
+                fill(255, 215, 0);
+                const rightEye = pose.rightEye;
+                ellipse(rightEye.x, rightEye.y, 10, 10);
+
+                // Create a yellow ellipse for the right eye
+                fill(255, 215, 0);
+                const leftEye = pose.leftEye;
+                ellipse(leftEye.x, leftEye.y, 10, 10);
+
+                fill(255,215,0);
+                const leftKnee = pose.leftKnee;
+                ellipse(leftKnee.x, leftKnee.y, 10, 10);
+
+                fill(255,215,0);
+                const rightKnee = pose.rightKnee;
+                ellipse(rightKnee.x, rightKnee.y, 10, 10);
+
+                line(rightEye.x, rightEye.y, leftEye.x, leftEye.y);
+
+            }
+        }
+
+        setup();
+        
+    </script>
+  </body>
+</html>
