@@ -23,16 +23,10 @@
         function setup() {
             createCanvas(cw,ch);
 
-            img = createImg("20sino-xi-master1050.jpg", imageReady);
+            img = createImg("20sino-xi-master1050.jpg");
             img.size(cw, ch);
             document.getElementById("canvas").style.display = "none";
 
-            img.hide();
-            frameRate(1);
-        }
-
-        function imageReady() {
-            // set some options
             const options = {
                 minConfidence: 0.1,
                 inputResolution: { width, height },
@@ -44,6 +38,9 @@
             poseNet.on("pose", function(results) {
                 poses = results;
             });
+
+            img.hide();
+            frameRate(1);
         }
 
         function modelReady() {
